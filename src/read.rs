@@ -32,14 +32,14 @@ impl Machine for Read {
   }
 
   fn id(&self) -> u64 {
-    Register{table_id: TableId::Global(*FILE_READ), row: TableIndex::All, column: TableIndex::All}.hash()
+    Register{table_id: TableId::Global(*FILE_READ), row: TableIndex::All, column: TableIndex::Alias(*PATH)}.hash()
   }
 
   fn on_change(&mut self, table: &Table) -> Result<(), String> {
     for i in 1..=table.rows {
       let filename = table.get_string(&TableIndex::Index(i), &TableIndex::Alias(*PATH));
       match filename {
-        Some(filename) => {
+        Some((filename,_)) => {
           let path = filename.clone();
           let outgoing = self.outgoing.clone();
           let row = TableIndex::Index(i);
